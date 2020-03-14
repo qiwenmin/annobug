@@ -108,9 +108,12 @@ void main() {
 
     while (1) {
         if (P3_4 == 0 || count_down == 0) {
-            buzz(rand() % 4 + 1);
-            // min: 64s (16s * 4), max: 800s (16s * 50)
-            count_down = 4 + rand() % 47;
+            unsigned char r = rand();
+            unsigned char buzz_count = r % 4 + 1;
+            if (buzz_count == 1) buzz_count = 3;
+            buzz(buzz_count);
+            // min: 48s (16s * 3), max: 1056s (16s * 66)
+            count_down = 3 + r % 64;
         } else {
             count_down --;
         }

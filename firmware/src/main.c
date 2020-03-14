@@ -28,13 +28,13 @@ static void init_timer0() {
 
     unsigned int v = 0x10000 - (F_CPU / 12 / 8000); // 4000Hz buzz
 
-	TL0 = v;
+    TL0 = v;
     TH0 = v >> 8;
 
-	TF0 = 0; // Clear TF0 flag
+    TF0 = 0; // Clear TF0 flag
 
-	TR0 = 1; // Start Timer0
-	ET0 = 1; // Enable Timer0 interrupt
+    TR0 = 1; // Start Timer0
+    ET0 = 1; // Enable Timer0 interrupt
 }
 
 void timer0_isr() __interrupt TF0_VECTOR {
@@ -79,15 +79,16 @@ static unsigned char rand8reg = 123;
 
 unsigned char rand(void) {
 __asm
-    mov	a, _rand8reg
-	jnz	rand8b
-	cpl	a
-	mov	_rand8reg, a
-rand8b:	anl	a, #0b10111000
-	mov	c, p
-	mov	a, _rand8reg
-	rlc	a
-	mov	_rand8reg, a
+    mov    a, _rand8reg
+    jnz    rand8b
+    cpl    a
+    mov    _rand8reg, a
+rand8b:
+    anl    a, #0b10111000
+    mov    c, p
+    mov    a, _rand8reg
+    rlc    a
+    mov    _rand8reg, a
 __endasm;
 
     return rand8reg;

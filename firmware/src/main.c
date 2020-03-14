@@ -21,7 +21,7 @@
 static unsigned char _buzz = 0;
 static volatile unsigned int _millis = 0;
 
-static void init_timer0() {
+inline void init_timer0() {
     PT0 = 1; /* Set Timer0 High Priority */
     AUXR &= ~0x80; /* Timer clock is 12T mode */
     TMOD &= 0xF0; /* Set timer work mode */
@@ -53,7 +53,7 @@ static void delay_ms(unsigned char ms)
     } while (--ms);
 }
 
-static void buzz(unsigned char times) {
+inline void buzz(unsigned char times) {
     for (unsigned char i = 0; i < times; i ++) {
         _buzz = 1;
         delay_ms(15);
@@ -62,7 +62,7 @@ static void buzz(unsigned char times) {
     }
 }
 
-static void sleep() {
+inline void sleep() {
     // put to sleep mode
     PCON = 0x02;
 
@@ -77,7 +77,7 @@ static void sleep() {
 
 static unsigned char rand8reg = 123;
 
-unsigned char rand(void) {
+static unsigned char rand(void) {
 __asm
     mov    a, _rand8reg
     jnz    rand8b
@@ -122,4 +122,3 @@ void main() {
         sleep();
     }
 }
-

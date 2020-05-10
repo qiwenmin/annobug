@@ -15,8 +15,16 @@
 
 #include <stc15.h>
 
-#define BUZZER_PIN P3_3
-#define INIT_BUZZER_PIN P3M0 |= (1 << 3)
+#ifdef BUZZER_PIN_X4
+    #define BUZZER_PIN P3
+    #define BUZZER_PIN_MASK (0x0F)
+    #define INIT_BUZZER_PIN P3M0 |= BUZZER_PIN_MASK
+
+    static unsigned char _buzzer_high = 0;
+#else
+    #define BUZZER_PIN P3_3
+    #define INIT_BUZZER_PIN P3M0 |= (1 << 3)
+#endif
 
 static unsigned char _buzz = 0;
 static volatile unsigned int _millis = 0;
@@ -38,11 +46,25 @@ inline void init_timer0() {
 }
 
 void timer0_isr() __interrupt TF0_VECTOR {
+#ifdef BUZZER_PIN_X4
+    if (_buzz) {
+        if (_buzzer_high) {
+            BUZZER_PIN |= BUZZER_PIN_MASK;
+        } else {
+            BUZZER_PIN &= ~BUZZER_PIN_MASK;
+        }
+        _buzzer_high = !_buzzer_high;
+    } else {
+        BUZZER_PIN &= ~BUZZER_PIN_MASK;
+        _buzzer_high = 0;
+    }
+#else
     if (_buzz) {
         BUZZER_PIN = !BUZZER_PIN;
     } else {
         BUZZER_PIN = 0;
     }
+#endif
 }
 
 static void delay_ms(unsigned char ms)

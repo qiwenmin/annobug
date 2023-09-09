@@ -18,12 +18,20 @@
 #ifdef BUZZER_PIN_X4
     #define BUZZER_PIN P3
     #define BUZZER_PIN_MASK (0x0F)
-    #define INIT_BUZZER_PIN P3M0 |= BUZZER_PIN_MASK
+    #define INIT_BUZZER_PIN P3M0 |= BUZZER_PIN_MASK; P3M1 &= 0xF0
 
     static unsigned char _buzzer_high = 0;
 #else
     #define BUZZER_PIN P3_3
-    #define INIT_BUZZER_PIN P3M0 |= (1 << 3)
+    #define INIT_BUZZER_PIN P3M0 |= (1 << 3); P3M1 &= ~(1 << 3)
+#endif
+
+#ifdef STC8G1KXX
+    #define TEST_PIN P5_4
+    #define INIT_TEST_PIN P5M0 &= ~(1 << 4); P5M1 &= ~(1 << 4); P5_4 = 1
+#else
+    #define TEST_PIN P3_4
+    #define INIT_TEST_PIN P3M0 &= ~(1 << 4); P3M1 &= ~(1 << 4); P3_4 = 1
 #endif
 
 static unsigned char _buzz = 0;
@@ -119,6 +127,7 @@ __endasm;
 void main() {
     unsigned char count_down = 0;
 
+    INIT_TEST_PIN;
     INIT_BUZZER_PIN;
     init_timer0();
 
@@ -130,7 +139,7 @@ void main() {
     EA = 1;
 
     while (1) {
-        if (P3_4 == 0 || count_down == 0) {
+        if (TEST_PIN == 0 || count_down == 0) {
             unsigned char r = rand();
             unsigned char buzz_count = r % 4 + 1;
             if (buzz_count == 1) buzz_count = 3;

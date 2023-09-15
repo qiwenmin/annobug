@@ -144,7 +144,7 @@ void main() {
             unsigned char buzz_count = r % 4 + 1;
             if (buzz_count == 1) buzz_count = 3;
             buzz(buzz_count);
-            // min: 48s (16s * 3), max: 1056s (16s * 66)
+            // min: 64s (16s * 4), max: 1072s (16s * 67)
             count_down = 3 + r % 64;
         } else {
             count_down --;

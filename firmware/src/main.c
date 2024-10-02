@@ -37,7 +37,7 @@
 static unsigned char _buzz = 0;
 static volatile unsigned int _millis = 0;
 
-inline void init_timer0() {
+inline void init_timer0(void) {
     PT0 = 1; /* Set Timer0 High Priority */
     AUXR &= ~0x80; /* Timer clock is 12T mode */
     TMOD &= 0xF0; /* Set timer work mode */
@@ -53,7 +53,7 @@ inline void init_timer0() {
     ET0 = 1; // Enable Timer0 interrupt
 }
 
-void timer0_isr() __interrupt TF0_VECTOR {
+void timer0_isr(void) __interrupt (TF0_VECTOR) {
 #ifdef BUZZER_PIN_X4
     if (_buzz) {
         if (_buzzer_high) {
@@ -92,7 +92,7 @@ inline void buzz(unsigned char times) {
     }
 }
 
-inline void sleep() {
+inline void sleep(void) {
     // put to sleep mode
     PCON = 0x02;
 
@@ -124,7 +124,7 @@ __endasm;
     return rand8reg;
 }
 
-void main() {
+void main(void) {
     unsigned char count_down = 0;
 
     INIT_TEST_PIN;
